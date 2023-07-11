@@ -1,6 +1,7 @@
 version: 2.1
 orbs:
   node: circleci/node@5.0.1
+  docker: circleci/docker@2.2.0
 jobs:
   build:
     docker:
@@ -30,3 +31,8 @@ workflows:
       - test:
           requires:
             - build
+  build-docker-image-only:
+    jobs:
+      - docker/publish:
+          image: odebear27/6m-software-m4-node-app-for-devops
+          update-description: true
