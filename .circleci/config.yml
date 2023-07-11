@@ -36,3 +36,5 @@ workflows:
       - docker/publish:
           image: odebear27/6m-software-m4-node-app-for-devops
           update-description: true
+          username: $PARAM_DOCKER_USERNAME
+          password: $PARAM_DOCKER_PASSWORD
