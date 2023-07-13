@@ -1,58 +1,7 @@
-version: 2.1
-orbs:
-  node: circleci/node@5.0.1
-  docker: circleci/docker@2.1.4
-jobs:
-  build:
-    docker:
-      - image: cimg/node:16.10
-    steps:
-      - checkout
-      - node/install-packages:
-          pkg-manager: npm
-      - run: |
-          echo "Installing dependencies..."
-          npm install
-  test:
-    docker:
-      - image: cimg/node:16.10
-    steps:
-      - checkout
-      - node/install-packages:
-          pkg-manager: npm
-      - run: |
-          echo "Running tests..."
-          npm run test
-  build-and-push:
-    executor: docker/docker
-    steps:
-      - setup_remote_docker
-      - checkout
-      - docker/check
-      - docker/build:
-          image: odebear27/education-space
-          tag: 0.1.0
-      - docker/push:
-          image: odebear27/education-space
-          tag: 0.1.0
-
-workflows:
-  simple_workflow:
-    jobs:
-      - build
-      - test:
-          requires:
-            - build
-      - build-and-push:
-          requires:
-            - test
-
-# with heroku
 # version: 2.1
 # orbs:
 #   node: circleci/node@5.0.1
 #   docker: circleci/docker@2.1.4
-#   heroku: circleci/heroku@2.0.0
 # jobs:
 #   build:
 #     docker:
@@ -81,24 +30,11 @@ workflows:
 #       - checkout
 #       - docker/check
 #       - docker/build:
-#           image: terencegaffudsu/education-space
+#           image: odebear27/education-space
 #           tag: 0.1.0
 #       - docker/push:
-#           image: terencegaffudsu/education-space
+#           image: odebear27/education-space
 #           tag: 0.1.0
-#   deploy:
-#     docker:
-#         - image: cimg/node:16.10
-#     steps:
-#         - setup_remote_docker      
-#         - heroku/install
-#         - checkout
-#         - run:
-#             name: Heroku Container Push
-#             command: | 
-#                 heroku container:login
-#                 heroku container:push web -a odebear27-su-devops
-#                 heroku container:release web -a odebear27-su-devops
 
 # workflows:
 #   simple_workflow:
@@ -110,9 +46,73 @@ workflows:
 #       - build-and-push:
 #           requires:
 #             - test
-#       - deploy:
-#           requires:
-#             - build-and-push
+
+# with heroku
+version: 2.1
+orbs:
+  node: circleci/node@5.0.1
+  docker: circleci/docker@2.1.4
+  heroku: circleci/heroku@2.0.0
+jobs:
+  build:
+    docker:
+      - image: cimg/node:16.10
+    steps:
+      - checkout
+      - node/install-packages:
+          pkg-manager: npm
+      - run: |
+          echo "Installing dependencies..."
+          npm install
+  test:
+    docker:
+      - image: cimg/node:16.10
+    steps:
+      - checkout
+      - node/install-packages:
+          pkg-manager: npm
+      - run: |
+          echo "Running tests..."
+          npm run test
+  build-and-push:
+    executor: docker/docker
+    steps:
+      - setup_remote_docker
+      - checkout
+      - docker/check
+      - docker/build:
+          image: terencegaffudsu/education-space
+          tag: 0.1.0
+      - docker/push:
+          image: terencegaffudsu/education-space
+          tag: 0.1.0
+  deploy:
+    docker:
+        - image: cimg/node:16.10
+    steps:
+        - setup_remote_docker      
+        - heroku/install
+        - checkout
+        - run:
+            name: Heroku Container Push
+            command: | 
+                heroku container:login
+                heroku container:push web -a odebear27-su-devops
+                heroku container:release web -a odebear27-su-devops
+
+workflows:
+  simple_workflow:
+    jobs:
+      - build
+      - test:
+          requires:
+            - build
+      - build-and-push:
+          requires:
+            - test
+      - deploy:
+          requires:
+            - build-and-push
 
 
 # attempt at assignment
