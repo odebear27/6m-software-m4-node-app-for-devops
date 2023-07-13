@@ -110,9 +110,9 @@ workflows:
       - test:
           requires:
             - build
-            filters:
-              branches:
-                only: main
+          filters:
+            branches:
+              only: main
       - build-and-push:
           requires:
             - test
