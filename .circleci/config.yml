@@ -49,6 +49,10 @@
 
 # with heroku
 version: 2.1
+parameters:
+  version-tag:
+    type: string
+    default: "latest"
 orbs:
   node: circleci/node@5.0.1
   docker: circleci/docker@2.1.4
@@ -82,10 +86,12 @@ jobs:
       - docker/check
       - docker/build:
           image: odebear27/education-space
-          tag: 0.1.0
+          # tag: 0.1.0
+          tag: << pipeline.parameters.version-tag >>
       - docker/push:
           image: odebear27/education-space
-          tag: 0.1.0
+          # tag: 0.1.0
+          tag: << pipeline.parameters.version-tag >>
   deploy:
     docker:
       - image: cimg/node:16.10
@@ -117,16 +123,16 @@ workflows:
           requires:
             - test
           filters:
-            # branches:
-            #   ignore: main
+            branches:
+              ignore: main
             tags:
               only: /^\d+\.\d+\.\d+$/
       - deploy:
           requires:
             - build-and-push
           filters:
-            # branches:
-            #   ignore: main
+            branches:
+              ignore: main
             tags:
               only: /^\d+\.\d+\.\d+$/
 # attempt at assignment
