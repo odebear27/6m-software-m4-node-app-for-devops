@@ -81,24 +81,24 @@ jobs:
       - checkout
       - docker/check
       - docker/build:
-          image: odebear27/education-space
+          image: odebear27/education-space:${CIRCLE_TAG}
           tag: 0.1.0
       - docker/push:
-          image: odebear27/education-space
+          image: odebear27/education-space:${CIRCLE_TAG}
           tag: 0.1.0
   deploy:
     docker:
-        - image: cimg/node:16.10
+      - image: cimg/node:16.10
     steps:
-        - setup_remote_docker      
-        - heroku/install
-        - checkout
-        - run:
-            name: Heroku Container Push
-            command: | 
-                heroku container:login
-                heroku container:push web -a odebear27-su-devops
-                heroku container:release web -a odebear27-su-devops
+      - setup_remote_docker
+      - heroku/install
+      - checkout
+      - run:
+          name: Heroku Container Push
+          command: |
+            heroku container:login
+            heroku container:push web -a odebear27-su-devops
+            heroku container:release web -a odebear27-su-devops
 
 workflows:
   simple_workflow:
@@ -120,7 +120,7 @@ workflows:
             branches:
               ignore: main
             tags:
-              only: /^[0-9]+(\.[0-9]+)*(-.+)?$/
+              only: /^\d+\.\d+\.\d+$/
       - deploy:
           requires:
             - build-and-push
@@ -128,9 +128,7 @@ workflows:
             branches:
               ignore: main
             tags:
-              only: /^[0-9]+(\.[0-9]+)*(-.+)?$/
-
-
+              only: /^\d+\.\d+\.\d+$/
 # attempt at assignment
 # version: 2.1
 # orbs:
